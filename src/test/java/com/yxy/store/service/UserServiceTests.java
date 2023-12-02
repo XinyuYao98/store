@@ -30,7 +30,7 @@ public class UserServiceTests {
     public void reg(){
         try {
             User user=new User();
-            user.setUsername("jerry");
+            user.setUsername("test02");
             user.setPassword("123");
             userService.reg(user);
             System.out.println("OK");
@@ -48,4 +48,22 @@ public class UserServiceTests {
         System.out.println(user);
     }
 
+    @Test
+    public void changePassword(){
+        userService.changePassword(7,"管理员","123","321");
+    }
+
+    @Test
+    public void getByUid(){
+        System.out.println(userService.getByUid(7));
+    }
+
+    @Test
+    public void changeInfo(){
+        User user=new User();
+        user.setPhone("98765432100");
+        user.setEmail("zhangsan@qq.com");
+        user.setGender(0);
+        userService.changeInfo(7,"管理员",user);
+    }
 }

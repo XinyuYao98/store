@@ -3,10 +3,7 @@ package com.yxy.store.service.impl;
 import com.yxy.store.entity.User;
 import com.yxy.store.mapper.UserMapper;
 import com.yxy.store.service.IUserService;
-import com.yxy.store.service.ex.InsertException;
-import com.yxy.store.service.ex.PasswordNotMatchException;
-import com.yxy.store.service.ex.UserNotFindException;
-import com.yxy.store.service.ex.UsernameDuplicatedException;
+import com.yxy.store.service.ex.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -96,11 +93,73 @@ public class UserServiceImpl implements IUserService {
         return user;
     }
 
+    @Override
+    public void changePassword(Integer uid,
+                               String username,
+                               String oldPassword,
+                               String newPassword) {
+        User result=userMapper.findByUid(uid);
+        if(result==null || result.getIsDelete()==1){
+            throw new UserNotFindException("用户数据不存在");
+        }
+        // 原始密码和数据库中密码进行比较
+        String oldMd5Password=
+                getMD5Password(oldPassword,result.getSalt());
+        if(!result.getPassword().equals(oldMd5Password)){
+            throw new PasswordNotMatchException("用户密码错误");
+        }
+        // 将新的密码设置到数据库中，将新的密码进行加密再去更新
+        String newMd5Password=
+                getMD5Password(newPassword,result.getSalt());
+        Integer rows=userMapper.updatePasswordByUid(uid, newMd5Password,  // 注意！要严格按照底层的参数列表来写参数顺序
+                username, new Date());
+        if(rows!=1){
+            throw new UpdateException("更新数据产生未知的异常");
+        }
+    }
+
+    @Override
+    public User getByUid(Integer uid) {
+        User result=userMapper.findByUid(uid);
+        if(result==null || result.getIsDelete()==1){
+            throw new UserNotFindException("用户数据不存在");
+        }
+        User user=new User();
+        user.setUsername(result.getUsername());
+        user.setPhone(result.getPhone());
+        user.setEmail(result.getPhone());
+        user.setGender(result.getGender());
+
+        return user;
+    }
+
+    /**
+     * User对象中的数据phone/email/gender,手动再将uid/username封装在
+     * user对象中
+     */
+    @Override
+    public void changeInfo(Integer uid, String username, User user) {
+        User result=userMapper.findByUid(uid);
+        if(result==null || result.getIsDelete()==1){
+            throw new UserNotFindException("用户数据不存在");
+        }
+        user.setUid(uid);
+        //user.setUsername(username);
+        user.setModifiedUser(username);
+        user.setModifiedTime(new Date());
+
+        Integer rows = userMapper.updateInfoByUid(user);
+        if(rows!=1){
+            throw new UpdateException("更新数据时产生未知的异常");
+        }
+
+    }
+
     /* 定义一个md5算法的加密 */
     private String getMD5Password(String password,String salt){
         // md5加密算法方法的调用（3次加密）
         for(int i=0;i<3;i++) {
-            password=DigestUtils.md5DigestAsHex((salt + password + salt).getBytes()).toUpperCase();
+            password= DigestUtils.md5DigestAsHex((salt + password + salt).getBytes()).toUpperCase();
         }
         // 返回加密之后的密码
         return password;

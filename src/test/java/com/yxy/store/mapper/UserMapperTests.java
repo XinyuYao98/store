@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
+
 
 // @SpringBootTest: 表示标注当前的类是一个测试类，不会随同项目一块打包
 @SpringBootTest
@@ -39,4 +41,23 @@ public class UserMapperTests {
         System.out.println(user);
     }
 
+    @Test
+    public void updatePasswordByUid(){
+        userMapper.updatePasswordByUid(6,"321","管理员",new Date());
+    }
+
+    @Test
+    public void findByUid(){
+        System.out.println(userMapper.findByUid(6));
+    }
+
+    @Test
+    public void updateInfoByUid(){
+        User user=new User();
+        user.setUid(7);
+        user.setPhone("12345678900");
+        user.setEmail("test02@163.com");
+        user.setGender(1);
+        userMapper.updateInfoByUid(user);
+    }
 }

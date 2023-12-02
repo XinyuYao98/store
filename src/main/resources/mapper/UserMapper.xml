@@ -47,4 +47,31 @@
     <select id="findByUsername" resultMap="UserEntityMap">
         SELECT * FROM t_user WHERE username=#{username}
     </select>
+
+    <update id="updatePasswordByUid">
+        UPDATE t_user
+        SET
+              password=#{password},
+              modified_user=#{modifiedUser},
+              modified_time=#{modifiedTime}
+        WHERE uid=${uid}
+    </update>
+
+    <select id="findByUid" resultMap="UserEntityMap">
+        SELECT * FROM t_user WHERE uid=#{uid}
+    </select>
+
+    <update id="updateInfoByUid">
+        UPDATE t_user
+        SET
+            <!--if表示条件判断标签，test接收的是一个返回值为boolean类型的条件，
+                如果test条件的结果为true则执行if标签内部的语句-->
+            <if test="phone!=null">phone=#{phone},</if>
+            <if test="email!=null">email=#{email},</if>
+            <if test="gender!=null">gender=#{gender},</if>
+                  modified_user=#{modifiedUser},
+                  modified_time=#{modifiedTime}
+        WHERE uid=${uid}
+    </update>
+
 </mapper>
