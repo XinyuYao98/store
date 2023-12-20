@@ -11,7 +11,7 @@ public class User extends BaseEntity implements Serializable {
     private String phone;
     private String email;
     private Integer gender; // 0-女  1-男
-    private Integer avatar;
+    private String avatar;
     private Integer isDelete;  // 是否删除：0-未删除，1-已删除
 
     // get和set方法、hashCode()和equals()方法、toString()方法
@@ -72,11 +72,11 @@ public class User extends BaseEntity implements Serializable {
         this.gender = gender;
     }
 
-    public Integer getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(Integer avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 

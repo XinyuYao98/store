@@ -60,4 +60,12 @@ public class UserMapperTests {
         user.setGender(1);
         userMapper.updateInfoByUid(user);
     }
+
+    @Test
+    public void updateAvatarByUid(){
+        userMapper.updateAvatarByUid(8,
+                "/upload/avatar.png",
+                "管理员",
+                new Date());
+    }
 }

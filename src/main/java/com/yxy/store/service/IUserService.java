@@ -1,6 +1,9 @@
 package com.yxy.store.service;
 
 import com.yxy.store.entity.User;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
 
 /* 用户模块业务层接口 */
 public interface IUserService {
@@ -44,4 +47,15 @@ public interface IUserService {
      * @param user 用户对象的数据
      */
     void changeInfo(Integer uid,String username,User user);
+
+    /**
+     * 修改用户的头像
+     * @param uid 用户的id
+     * @param avatar 用户头像的路径
+     * @param username 用户的名称
+     */
+    void changeAvatar(Integer uid,
+                      String avatar,
+                      String username);
+
 }
